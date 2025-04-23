@@ -1,61 +1,83 @@
-import React from 'react'
-import { FaUserCircle, FaEllipsisV, FaSearch } from 'react-icons/fa';
+'use client';
+import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { FaPhoneAlt, FaUser } from 'react-icons/fa';
+import { FiChevronDown } from 'react-icons/fi';
+import { HiHome } from 'react-icons/hi';
 
 export default function Navbar() {
+  const [langOpen, setLangOpen] = useState(false);
+  const router = useRouter();
+
+  const languages = [
+    { code: 'en', label: 'EN', emoji: '🇺🇸' },
+    { code: 'tr', label: 'TR', emoji: '🇹🇷' },
+  ];
+  const [currentLang, setCurrentLang] = useState(languages[0]);
+
+  const handleLangChange = (lang) => {
+    setCurrentLang(lang);
+    setLangOpen(false);
+  };
+
   return (
-    <nav className="bg-white shadow-sm">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        {/* Main Navigation */}
-        <div className="flex h-16 items-center justify-between">
-          
-          {/* Left Section - Logo and Results */}
-          <div className="flex items-center">
-            <h1 className="text-xl font-bold text-gray-900">Home</h1>
-            
+    <nav className="bg-white shadow-md sticky top-0 z-50">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center h-16">
+          {/* Logo on the left */}
+          <div className="flex items-center gap-2 text-gray-900 font-bold text-xl">
+            <HiHome className="text-blue-600 h-6 w-6" />
+            <span>ApartX</span>
           </div>
 
-          {/* Middle Section - Search (Desktop) */}
-          <div className="hidden flex-1 max-w-2xl px-8 lg:block">
-            <div className="flex items-center rounded-full border px-4 py-2 text-sm text-gray-400 hover:border-gray-400">
-              <FaSearch className="mr-2 h-4 w-4" />
-              Search by location...
-            </div>
-          </div>
-
-          {/* Right Section - Navigation and Icons */}
-          <div className="flex items-center gap-4">
-            {/* Desktop Navigation */}
-            <div className="hidden space-x-6 text-sm text-gray-500 lg:flex">
-              <button className="hover:text-gray-700">Buy</button>
-              <button className="hover:text-gray-700">Rent</button>
-              <button className="hover:text-gray-700">Sell</button>
-              <button className="hover:text-gray-700">Find Agent</button>
+          {/* Right section: Call, Language, Sign In */}
+          <div className="flex items-center gap-6">
+            {/* Call info */}
+            <div className="hidden md:flex items-center gap-2 border-r pr-4">
+              <FaPhoneAlt className="text-gray-600" />
+              <div className="leading-tight">
+                <span className="text-xs text-gray-500">Call us at</span>
+                <div className="text-sm font-semibold text-blue-800">
+                 +90 539 105 61 63
+                </div>
+              </div>
             </div>
 
-            {/* Icons */}
-            <div className="flex items-center gap-2">
-              <button className="hidden rounded-full p-2 hover:bg-gray-100 lg:block">
-                <FaUserCircle className="h-6 w-6 text-gray-500" />
+            {/* Language switcher */}
+            <div className="relative">
+              <button
+                onClick={() => setLangOpen((prev) => !prev)}
+                className="flex items-center gap-2 px-3 py-1 border border-gray-200 rounded-md hover:bg-gray-100 transition"
+              >
+                <span>{currentLang.emoji}</span>
+                {currentLang.label}
+                <FiChevronDown />
               </button>
-              <button className="rounded-full p-2 hover:bg-gray-100">
-                <FaEllipsisV className="h-6 w-6 text-gray-500" />
-              </button>
+
+              {langOpen && (
+                <div className="absolute right-0 mt-2 w-28 bg-white rounded-md shadow-md z-50">
+                  {languages.map((lang) => (
+                    <button
+                      key={lang.code}
+                      onClick={() => handleLangChange(lang)}
+                      className="w-full px-4 py-2 flex items-center gap-2 hover:bg-gray-100"
+                    >
+                      <span>{lang.emoji}</span>
+                      {lang.label}
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
-          </div>
-        </div>
 
-        {/* Mobile Search and Filters */}
-        <div className="flex h-12 items-center justify-between border-t lg:hidden">
-          {/* Mobile Search */}
-          <button className="flex items-center text-sm text-gray-500">
-            <FaSearch className="mr-2 h-4 w-4" />
-            Search
-          </button>
-
-          {/* Mobile Filters */}
-          <div className="flex space-x-4 text-sm text-gray-500">
-            <button>2-4 Beds</button>
-            <button>All Types</button>
+            {/* Sign In */}
+            <button
+              onClick={() => router.push('/signin')}
+              className="flex items-center gap-2 px-4 py-1.5 border border-gray-300 rounded-md hover:bg-gray-100 transition"
+            >
+              <FaUser className="text-gray-600" />
+              <span className="text-sm font-medium">SIGN IN</span>
+            </button>
           </div>
         </div>
       </div>
